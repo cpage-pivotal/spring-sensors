@@ -11,6 +11,8 @@ metadata:
     - tanzu
   annotations:
     'backstage.io/kubernetes-label-selector': 'app.kubernetes.io/part-of=spring-sensors'
+    grafana/dashboard-selector: 'general'
+    grafana/alert-label-selector: 'type=http-requests'
 spec:
   type: service
   lifecycle: experimental
