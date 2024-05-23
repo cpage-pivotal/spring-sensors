@@ -1,0 +1,26 @@
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: spring-sensors-route
+  annotations:
+    healthcheck.gslb.tanzu.vmware.com/service: spring-sensors
+    healthcheck.gslb.tanzu.vmware.com/path: /
+    healthcheck.gslb.tanzu.vmware.com/port: "8080"
+spec:
+  parentRefs:
+  - group: gateway.networking.k8s.io
+    kind: Gateway
+    name: default-gateway
+    sectionName: https-spring-sensors
+  rules:
+  - backendRefs:
+    - group: ""
+      kind: Service
+      name: spring-sensors
+      port: 8080
+      weight: 1
+    matches:
+    - path:
+        type: PathPrefix
+        value: /
+
