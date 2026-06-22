@@ -49,7 +49,29 @@ jobs:
       - name: Generate build configuration
         run: advisor build-config get
 
+      - name: Configure git identity
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+
       - name: Apply upgrade plan
+        run: advisor upgrade-plan apply
+
+      - name: Open PR if changes were made
         env:
-          GIT_TOKEN_FOR_PRS: ${{ secrets.GIT_TOKEN_FOR_PRS }}
-        run: advisor upgrade-plan apply --push
+          GH_TOKEN: ${{ secrets.GIT_TOKEN_FOR_PRS }}
+        run: |
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "No changes – project is already up to date."
+            exit 0
+          fi
+          BRANCH="advisor-upgrade-$(date +%Y%m%d-%H%M%S)"
+          git checkout -b "$BRANCH"
+          git add -A
+          git commit -m "chore: apply Application Advisor upgrade step"
+          git push "https://x-access-token:${{ secrets.GIT_TOKEN_FOR_PRS }}@github.com/${{ github.repository }}.git" "$BRANCH"
+          gh pr create \
+            --title "chore: apply Application Advisor upgrade step" \
+            --body "Automated upgrade PR opened by Application Advisor." \
+            --base main \
+            --head "$BRANCH"
