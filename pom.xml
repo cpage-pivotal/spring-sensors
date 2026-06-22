@@ -61,6 +61,19 @@
         </dependency>
     </dependencies>
 
+    <repositories>
+        <repository>
+            <id>spring-enterprise-subscription</id>
+            <url>https://packages.broadcom.com/artifactory/spring-enterprise</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>spring-enterprise-subscription</id>
+            <url>https://packages.broadcom.com/artifactory/spring-enterprise</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <build>
         <plugins>
             <plugin>
